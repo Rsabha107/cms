@@ -660,23 +660,23 @@ Bank Name: Qatar National Bank (QNB) <br>
             'alert-type'    => 'success'
         );
 
-        if ($status_title->title == 'Payment Pending') {
-            $saveOrderPdf = $this->saveOrderPDF($head->id);
+        // if ($status_title->title == 'Payment Pending') {
+        //     $saveOrderPdf = $this->saveOrderPDF($head->id);
 
-            $details = [
-                'email' => 'rsabha@gmail.com',
-                'order_ref_number' => $head->order_number,
-                'filename' => $head->order_number . '.pdf',
-            ];
+        //     $details = [
+        //         'email' => 'rsabha@gmail.com',
+        //         'order_ref_number' => $head->order_number,
+        //         'filename' => $head->order_number . '.pdf',
+        //     ];
 
-            Log::info('BookingController::admin_email: ' . config('settings.admin_email'));
-            Log::info('BookingController::store details: ' . json_encode($details));
-            Log::info('BookingController::store settings.send_notifications: ' . config('settings.send_notifications'));
+        //     Log::info('BookingController::admin_email: ' . config('settings.admin_email'));
+        //     Log::info('BookingController::store details: ' . json_encode($details));
+        //     Log::info('BookingController::store settings.send_notifications: ' . config('settings.send_notifications'));
 
-            if (config('settings.send_notifications')) {
-                SendNewOrderEmailJob::dispatch($details);
-            }
-        }
+        //     if (config('settings.send_notifications')) {
+        //         SendNewOrderEmailJob::dispatch($details);
+        //     }
+        // }
 
         return response()->json(['error' => false, 'message' => 'Order Status updated successfully.', 'id' => $head->id]);
     } //updateStatus

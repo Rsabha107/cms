@@ -27,7 +27,7 @@ class CmsNewOrderMail extends Mailable
     {
         return $this->subject('CMS Confirmation for a New Order Request'.' - ' . $this->details['order_ref_number'])
             ->view('emails.new_order')
-            ->from('rsabha@gmail.com', 'CMS')
+            ->from('cds@scqa0.onmicrosoft.com', 'CMS')
             ->attach(storage_path('app/private/' . $this->details['filename']), [
                 // 'as' => 'booking_confirmation.pdf',
                 'mime' => 'application/pdf',
