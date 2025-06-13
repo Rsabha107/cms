@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Cms\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Jobs\SendNewOrderEmailJob;
-use App\Models\Cms\Customer;
+use App\Models\Cms\Contractor;
 use App\Models\Cms\OrderHeader;
 use App\Models\GeneralSettings\Company;
 use App\Models\GeneralSettings\CompanyAddress;
@@ -17,6 +17,7 @@ use App\Models\Cms\Product;
 use App\Models\Cms\ServiceLocation;
 use App\Models\Cms\ServiceTime;
 use App\Models\Cms\Venue;
+use App\Models\GeneralSettings\GlobalAttachment;
 use App\Models\Order;
 use App\Models\Procurement\PurchaseOrderLine;
 use App\Models\User;
@@ -37,7 +38,7 @@ class OrderController extends Controller
     public function index()
     {
         $orders = OrderHeader::all();
-        $customers = Customer::all();
+        $customers = Contractor::all();
         $products = Product::all();
         $currency = Currency::all();
         $addresses = CompanyAddress::all();
@@ -99,16 +100,16 @@ class OrderController extends Controller
             $profile_action =
                 '<a href="' . route("cms.admin.orders.order", $op->id) . '" class="btn-table btn-sm"  data-id="' .
                 $op->id .
-                '" data-table="order_table" data-bs-toggle="tooltip" data-bs-placement="right" title="View Purchase Order">' .
+                '" data-table="order_table" data-bs-toggle="tooltip" data-bs-placement="right" title="View Order">' .
                 '<i class="fa-solid far fa-lightbulb text-warning"></i></a>';
             $actions_pdf =
                 '<a href="' . $pdf_route . '" class="btn btn-sm" id="bookingDetails" target="_blank" data-id="' . $op->id .
-                '" data-table="order_table" data-bs-toggle="tooltip" data-bs-placement="right" title="Purchase Order Pdf">' .
+                '" data-table="order_table" data-bs-toggle="tooltip" data-bs-placement="right" title="Order Pdf">' .
                 '<i class="fa-solid fa-file-invoice text-success"></i></a>';
 
             $actions_download_pdf =
                 '<a href="' . $pdf_download . '" class="btn btn-sm" id="bookingDetails" data-id="' . $op->id .
-                '" data-table="order_table" data-bs-toggle="tooltip" data-bs-placement="right" title="Download Purchase Order Pdf">' .
+                '" data-table="order_table" data-bs-toggle="tooltip" data-bs-placement="right" title="Download Order Pdf">' .
                 '<i class="fa-solid fa-download text-dark"></i></a>';
 
             $update_action =
@@ -144,16 +145,19 @@ class OrderController extends Controller
             $actions = $actions_pdf;
             $order_status =  '<span class="badge badge-phoenix fs--2 badge-phoenix-' . $op->status->color . ' "><span class="badge-label" style="cursor: pointer;" id="editOrderStatus" data-id="' . $op->id . '" data-table="order_table">' . $op->status->title . '</span><span class="ms-1" data-feather="x" style="height:12.8px;width:12.8px;"></span></span>';
 
+            $icon = (($op->attachments?->count()) ? '<button class="btn p-0 text-body-tertiary fs-10 me-2" id="attachment_list" data-model_id=' . $op->id . '><span class="fas fa-paperclip me-1"></span>' . $op->attachments?->count() . '</button>' : "");
 
             return [
                 'id1' => '<div class="ms-3">' . $op->id . '</div>',
                 'id' => $op->id,
+                'icon' => $icon,
                 'order_number' => '<div class="align-middle white-space-wrap fw-bold fs-9 ms-3"><a href="javascript:void(0)" id="show_order_lines" data-id="' . $op->id . '">' . $op->order_number . '</a></div>',
                 // 'order_number' => '<div class="align-middle white-space-wrap fw-bold fs-9 ms-3">' . $op->order_number . '</a></div>',
-                'customer_id' => '<div class="align-middle white-space-wrap fw-bold fs-9">' . $op->customer?->name . '</div>',
+                'customer_id' => '<div class="align-middle white-space-wrap fw-bold fs-9">' . $op->contractor?->company_name . '</div>',
                 'event_id' => '<div class="align-middle white-space-wrap fw-bold fs-9">' . $op->event?->name . '</div>',
                 'order_date' => '<div class="align-middle white-space-wrap fw-bold fs-9">' . format_date($op->order_date) . '</div>',
                 'total_quantity' => '<div class="align-middle white-space-wrap fw-bold fs-9">' . $total_orders->total_quantity . '</div>',
+                'payable_to_sc' => '<div class="align-middle white-space-wrap fw-bold fs-9">' . ($total_orders->total_amount * 0.25) . '</div>',
                 'total_amount' => '<div class="align-middle white-space-wrap fw-bold fs-9">' . $total_orders->total_amount . '</div>',
                 'status' => '<div class="align-middle white-space-wrap fw-bold fs-9">' . $op->delivery_status?->title . '</div>',
                 'status' => $order_status,
@@ -194,7 +198,7 @@ class OrderController extends Controller
     {
         $purchase = OrderHeader::findOrFail($id);
         $lines = OrderLine::where('po_header_id', $purchase->id)->get();
-        $customers = Customer::all();
+        $customers = Contractor::all();
         $Products = Product::all();
         $currency = Currency::all();
         $addresses = CompanyAddress::all();
@@ -272,34 +276,11 @@ class OrderController extends Controller
 
                 $order_status_id = gerOrderStatusId('Payment Pending');
 
-                // $head->event_id = session()->get('EVENT_ID');
-                // $head->order_number = $request->order_number;
-                // $head->customer_id = intval($request->customer_id);
-                // if ($request->order_date) {
-                //     $head->order_date = Carbon::createFromFormat('d/m/Y', $request->order_date);
-                // }
-                // if ($request->expected_delivery_date) {
-                //     $head->expected_delivery_date = Carbon::createFromFormat('d/m/Y', $request->expected_delivery_date);
-                // }
-                // $head->deliver_to_address_id = intval($request->deliver_to_address_id);
-                // $head->requester_id = intval($request->requester_id);
-                // $head->description = $request->h_description;
-
-                // $head->note_to_vendor = $request->note_to_vendor;
-                // $head->order_status_id = intval($order_status_id);
-                // $head->currency_id = intval($request->currency_id);
-                // $head->created_by = $user_id;
-                // $head->updated_by = $user_id;
-
                 $head = OrderHeader::create([
                     'event_id' => session()->get('EVENT_ID'),
                     // 'order_number' => $request->order_number,
                     'customer_id' => intval($request->customer_id),
                     'order_date' => Carbon::createFromFormat('d/m/Y', $request->order_date),
-                    // 'expected_delivery_date' => Carbon::createFromFormat('d/m/Y', $request->expected_delivery_date),
-                    // 'deliver_to_address_id' => intval($request->deliver_to_address_id),
-                    // 'requester_id' => intval($request->requester_id),
-                    // 'description' => $request->h_description,
                     'note_to_vendor' => $request->note_to_vendor,
                     'order_status_id' => intval($order_status_id),
                     'currency_id' => intval($request->currency_id),
@@ -312,16 +293,6 @@ class OrderController extends Controller
                 if ($saved) {
                     $order_header_id = $head->id;
                     foreach ($request->product_id as $key => $item) {
-                        // $line = new PurchaseOrderLine();
-
-                        // $line->po_header_id = $header_id;
-                        // $line->item_id = intval($request->item_id[$key]);
-                        // $line->quantity = $request->quantity[$key];
-                        // $line->unit_price = $request->unit_price[$key];
-                        // $line->line_description = $request->line_description[$key];
-
-                        // $line->created_by = $user_id;
-                        // $line->updated_by = $user_id;
                         Log::info('Creating OrderLine key:  ' . $key . ' with product_id: ' . $request->product_id[$key]);
                         $data = new OrderLine([
                             'order_header_id' => $order_header_id,
@@ -337,14 +308,6 @@ class OrderController extends Controller
                             'created_by' => $user_id,
                             'updated_by' => $user_id,
                         ]);
-
-                        // $data = array(
-                        //     'po_header_id' => $header_id,
-                        //     'item_id' => $request->item_id[$key],
-                        //     'quantity' => $request->quantity[$key],
-                        //     'unit_price' => $request->unit_price[$key],
-                        //     'line_description' => $request->line_description[$key],
-                        // );
 
                         Log::info($data);
                         $data->save();
@@ -423,13 +386,6 @@ class OrderController extends Controller
             'error' => $error,
             'message' => $message,
         ]);
-
-        // // Toastr::success('Has been add successfully :)','Success');
-        // if ($request->source == 'plist') {
-        //     return Redirect::route('tracki.task.list', $request->id)->with($notification);
-        // } else {
-        //     return Redirect::route('tracki.project.show.card')->with($notification);
-        // }
     } // update
 
     /**
@@ -462,9 +418,9 @@ class OrderController extends Controller
         $customer = new Buyer([]);
 
         $client = new Party([
-            'name'          => $po->customer->name,
-            'phone'         => $po->customer->phone_number,
-            'address'       => $po->customer->billing_address,
+            'name'          => $po->contractor->name,
+            'phone'         => $po->contractor->phone_number,
+            'address'       => $po->contractor->billing_address,
             // 'custom_fields' => [
             //     'note'        => 'IDDQD',
             //     'business id' => '365#GG',
@@ -519,7 +475,7 @@ class OrderController extends Controller
             ->orderStatus($po->status->title)
             ->event($po->event?->name)
             // ->notes($po->note_to_vendor)
-                        ->notes('Catering Venue Manager : Mustapha Berrebbah / Contact no.:5574 3753 <br>													
+            ->notes('Catering Venue Manager : Mustapha Berrebbah / Contact no.:5574 3753 <br>													
 CAT Meal Order Focal Point : Hebatallah El-Sayed / Contact no. : 5519 9847	<br>												
 Caterer Focal Point : Pawel Mrozek  / Contact no. :  59978152	<br>												
 Payment Link:	https://www.qatartourism.com/en/qatartourism/qatartourism-payment-portal" <br>
@@ -742,12 +698,12 @@ Bank Name: Qatar National Bank (QNB) <br>
         $customer = new Buyer([]);
 
         $client = new Party([
-            'name'          => $po->customer->name,
-            'phone'         => $po->customer->phone,
-            'address'       => $po->customer->address,
+            'name'          => $po->contractor->name,
+            'phone'         => $po->contractor->phone,
+            'address'       => $po->contractor->address,
             'custom_fields' => [
-                'company' => $po->customer->company_name,
-                'email' => $po->customer->email,
+                'company' => $po->contractor->company_name,
+                'email' => $po->contractor->email,
             ],
             // 'custom_fields' => [
             //     'note'        => 'IDDQD',
@@ -803,7 +759,7 @@ Bank Name: Qatar National Bank (QNB) <br>
             ->orderStatus($po->status->title)
             ->event($po->event?->name)
             // ->notes($po->note_to_vendor)
-                        ->notes('Catering Venue Manager : Mustapha Berrebbah / Contact no.:5574 3753 <br>													
+            ->notes('Catering Venue Manager : Mustapha Berrebbah / Contact no.:5574 3753 <br>													
 CAT Meal Order Focal Point : Hebatallah El-Sayed / Contact no. : 5519 9847	<br>												
 Caterer Focal Point : Pawel Mrozek  / Contact no. :  59978152	<br>												
 Payment Link:	https://www.qatartourism.com/en/qatartourism/qatartourism-payment-portal" <br>
@@ -825,5 +781,20 @@ Bank Name: Qatar National Bank (QNB) <br>
             ->addItems($items)
             ->save('private');
         // return $invoice->stream();
+    }
+
+    public function getAttachmentView($id)
+    {
+        // dd($id);
+        $order_attachments = GlobalAttachment::where('model_id', '=', $id)
+            ->where('model_name', 'ORDERS')->get();
+
+            Log::info('Order Attachments: ' . $order_attachments);
+            $view = view('cms.attachment.show-ro', [
+                'attachments' => $order_attachments,
+            ])->render();
+
+
+        return response()->json(['view' => $view]);
     }
 }

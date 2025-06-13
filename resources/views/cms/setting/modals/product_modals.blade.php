@@ -10,7 +10,7 @@
             </svg><!-- <i class="fa fa-times"></i> Font Awesome fontawesome.com --></span>
     </a>
     <x-cms.settings.product-edit-drawer id="" formAction="{{ route('cms.setting.product.update') }}"
-        formId="add_booking_slot_form" :products="$products" :unitTypes="$unit_types"/>
+        formId="edit_booking_slot_form" :products="$products" :unitTypes="$unit_types"/>
 </div>
 
 <div class="offcanvas offcanvas-end offcanvas-global-modal in" id="offcanvas-add-product-modal" tabindex="-1"
@@ -28,8 +28,3 @@
         formId="add_booking_slot_form" :products="$products" :unitTypes="$unit_types"/>
 </div>
 
-{{-- <div class="offcanvas offcanvas-end offcanvas-filter-modal in" id="scheduleFilterOffcanvas" tabindex="-1"
-    aria-labelledby="offcanvasWithBackdropLabel">
-    <x-setting.admin-schedule-filter-drawer id="" formAction="" formId="filter_schedule_form"
-        :events="$events" :venues="$venues" :rsps="$rsps" :schedules="$schedules" :globalYn="$global_yn" />
-</div> --}}

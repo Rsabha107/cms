@@ -1,12 +1,10 @@
-@extends('mds.admin.layout.admin_template')
+@extends('cms.admin.layout.admin_template')
 @section('main')
-
 
 <!-- ===============================================-->
 <!--    Main Content-->
 <!-- ===============================================-->
 
-<div class="content">
     <div class="mt-4">
         <div class="row g-4">
             <!-- this controls the size of the table  -->

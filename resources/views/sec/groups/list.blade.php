@@ -1,4 +1,5 @@
-@extends('mds.admin.layout.admin_template')
+{{-- @extends('mds.admin.layout.admin_template') --}}
+@extends('cms.admin.layout.admin_template')
 @section('main')
 
 

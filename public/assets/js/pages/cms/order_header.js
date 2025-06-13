@@ -108,20 +108,32 @@ $(document).ready(function () {
         $("#cover-spin").hide();
     });
 
-    $("body").on("click", "#edit_purchase_offcanv", function () {
-        console.log("inside #edit_purchase_offcanv");
+    // attach payment file
+    $("body").on("click", "#attach_payment_file", function () {
+        console.log("inside #attach_payment_file");
+
+        order_id = $(this).data("id");
+        console.log("order_id", order_id);
+        $("#order_id").val(order_id);
+
         $("#cover-spin").show();
-        var id = $(this).data("id");
-        console.log("id", id);
+        $("#payment_file_upload_modal").modal("show");
+        $("#cover-spin").hide();
+    });
+
+    // show attachment list from order list (clip icon)
+    $("body").on("click", "#attachment_list", function () {
+        $("#cover-spin").show();
+        id = $(this).data("model_id");
+
         $.ajax({
-            url: "/cms/admin/orders/mv/edit/" + id,
+            url: "/cms/contractor/orders/attachments/" + id,
             method: "GET",
             async: true,
             success: function (response) {
                 g_response = response.view;
-                $("#global-edit-purchase-content").empty("").append(g_response);
-
-                $("#offcanvas-edit-purchase-modal").offcanvas("show");
+                $("#AttachmentView").empty("").append(g_response);
+                $("#attachment_list_modal").modal("show");
                 $("#cover-spin").hide();
             },
             error: function (xhr, ajaxOptions, thrownError) {
@@ -129,6 +141,54 @@ $(document).ready(function () {
                 console.log(thrownError);
                 $("#cover-spin").hide();
             },
+        });
+    });
+
+    // delete files
+    $("body").on("click", "#delete_file", function (e) {
+        var id = $(this).data("id");
+        var tableID = $(this).data("table");
+        e.preventDefault();
+        // alert("tableID: "+tableID);
+        var link = $(this).attr("href");
+        Swal.fire({
+            title: "Are you sure?",
+            text: "Delete This Data?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "/global/files/delete/" + id,
+                    type: "DELETE",
+                    headers: {
+                        "X-CSRF-TOKEN": $('input[name="_token"]').attr("value"), // Replace with your method of getting the CSRF token
+                    },
+                    dataType: "json",
+                    success: function (result) {
+                        if (!result["error"]) {
+                            toastr.success(result["message"]);
+                            // divToRemove.remove();
+                            // $("#fileCount").html("File ("+result["count"]+")");
+                            // console.log('before table refrest for #'+tableID);
+                            $("#attachment_list_modal").modal("hide");
+                            $("#" + tableID).bootstrapTable("refresh");
+                            // Swal.fire(
+                            //     'Deleted!',
+                            //     'Your file has been deleted.',
+                            //     'success'
+                            //   )
+                        }
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        console.log(xhr.status);
+                        console.log(thrownError);
+                    },
+                });
+            }
         });
     });
 
@@ -179,6 +239,36 @@ $(document).ready(function () {
                 });
             }
         });
+    });
+
+    $(".order-form").on("submit", function (e) {
+        e.preventDefault(); // Prevent default form submission
+        alert("Form submitted!"); // For debugging purposes
+        console.log("inside order-form submit handler");
+
+        const orderId = $(this).data("order-id");
+        const button = $(this).find("button");
+
+        // Disable the button to prevent multiple clicks
+        button.prop("disabled", true).text("Processing...");
+
+        console.log(`Processing order: ${orderId}`);
+
+        // Simulate an AJAX call (replace with your actual AJAX request)
+        setTimeout(() => {
+            // Simulate success or failure
+            const success = Math.random() > 0.3; // 70% chance of success
+
+            if (success) {
+                alert(`Order ${orderId} processed successfully!`);
+                // Optionally update the status in the table
+                $(this).closest("tr").find("td:eq(4)").text("Processed");
+                button.text("Processed").prop("disabled", true); // Keep disabled and change text
+            } else {
+                alert(`Failed to process order ${orderId}. Please try again.`);
+                button.prop("disabled", false).text("Process Order"); // Re-enable and reset text
+            }
+        }, 1500); // Simulate network latency
     });
 });
 

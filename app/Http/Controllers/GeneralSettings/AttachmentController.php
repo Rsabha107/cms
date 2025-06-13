@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\GeneralSettings;
 
 use App\Http\Controllers\Controller;
+use App\Models\Cms\OrderHeader;
 use App\Models\Employee;
 use App\Models\GeneralSettings\GlobalAttachment;
+use App\Models\Order;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
@@ -22,7 +24,7 @@ class AttachmentController extends Controller
     {
         $employees = Employee::all();
         $model_names = GlobalAttachment::distinct()->get('model_name');
-        return view('hr.admin.files.list', compact('employees','model_names'));
+        return view('hr.admin.files.list', compact('employees', 'model_names'));
     }
 
     public function get($id)
@@ -100,7 +102,7 @@ class AttachmentController extends Controller
                 $data->original_file_name = $file->getClientOriginalName();
                 $data->file_extension = $file->getClientOriginalExtension();
                 $data->file_size = $_FILES['file_name']['size']; //$request->file('file_name')->getSize();
-                $data->file_path = '/app/private/'.$request->model_name.'/';
+                $data->file_path = '/app/private/' . $request->model_name . '/';
                 $data->user_id = $id;
                 $data->employee_id = ($request->employee_id) ? $request->employee_id : null;
                 $data->model_id = $request->model_id;
@@ -109,6 +111,18 @@ class AttachmentController extends Controller
             }
 
             $data->save();
+
+            if ($request->action === 'update_order_status') {
+                Log::info('Updating order status for model_id: ' . $request->model_id);
+                $order = OrderHeader::find($request->model_id);
+                if ($order) {
+                    Log::info('Order found: ' . $order->id);
+                    Log::info('Updating order status to "Payment Submitted"');
+                    $order_status_id = gerOrderStatusId('Payment Submitted');
+                    $order->order_status_id = intval($order_status_id);
+                    $order->save();
+                }
+            }
 
             $notification = array(
                 'message'       => 'File added successfully',
@@ -235,6 +249,7 @@ class AttachmentController extends Controller
         Log::info($fileDetails->file_name);
         $filepath = storage_path($fileDetails->file_path . $fileDetails->file_name);
 
+        $model_id = $fileDetails->model_id;
         if (File::exists($filepath)) {
             File::delete($filepath);
         }
@@ -244,6 +259,18 @@ class AttachmentController extends Controller
 
         GlobalAttachment::where('id', '=', $id)->delete();
 
+                if ($fileDetails->count() === 0 && $fileDetails->model_name === 'ORDERS') {
+                $order = OrderHeader::find($model_id);
+                if ($order) {
+                    Log::info('Order found: ' . $order->id);
+                    Log::info('Updating order status to "Payment Submitted"');
+                    $order_status_id = gerOrderStatusId('Payment Pending');
+                    $order->order_status_id = intval($order_status_id);
+                    $order->save();
+                }
+            }
+
+        Log::info('File deleted successfully with count: ' . $fileDetails->count());
         $notification = array(
             'message'       => 'File deleted successfully',
             'alert-type'    => 'success'

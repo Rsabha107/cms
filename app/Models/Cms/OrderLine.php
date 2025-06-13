@@ -49,4 +49,9 @@ class OrderLine extends Model
     {
         return $this->belongsTo(ServiceLocation::class, 'service_location_id');
     }
+
+    public function vouchers()
+    {
+        return $this->hasMany(OrderLinesVoucher::class, 'order_line_id', 'id');
+    }
 }

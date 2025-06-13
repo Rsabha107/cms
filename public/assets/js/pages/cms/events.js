@@ -2,9 +2,19 @@ $(document).ready(function () {
     // console.log("all tasksJS file");
 
     // ************************************************** task venues
+    $(".js-select-event-assign-multiple-venue_id").select2({
+        closeOnSelect: false,
+        placeholder: "Select ...",
+    });
+
+    $(".js-select-event-assign-multiple-edit_venue_id").select2({
+        closeOnSelect: false,
+        placeholder: "Select ...",
+    });
 
     $("body").on("click", "#editEvents", function () {
-        // console.log('inside edit_events')
+        console.log("inside edit_events");
+
         var id = $(this).data("id");
         var table = $(this).data("table");
         // console.log('edit venues in venues.js');
@@ -12,20 +22,37 @@ $(document).ready(function () {
         // console.log('table: '+table);
         // var target = document.getElementById("edit_venues_modal");
         // var spinner = new Spinner().spin(target);
-        // $("#edit_venues_modal").modal("show");
+        // $("#edit_event_table").modal("show");
         $.ajax({
-            url: "/cms/setting/event/mv/get/" + id,
+            url: "/cms/setting/event/get/" + id,
             type: "get",
             headers: {
                 "X-CSRF-TOKEN": $('input[name="_token"]').attr("value"), // Replace with your method of getting the CSRF token
             },
             dataType: "json",
             success: function (response) {
-                // console.log(response)
-                g_response = response.view;
-                $("#global-edit-event-slot-content")
-                    .empty("")
-                    .append(g_response);
+                console.log(response);
+                let imageUrl = "";
+                // Get the Dropify instance
+                let drEvent = $("#edit_file_name").dropify();
+
+                // Reset and destroy the previous instance
+                drEvent = drEvent.data("dropify");
+                drEvent.resetPreview();
+                drEvent.clearElement();
+                imageUrl = response.op.event_logo ?? "default.png";
+                drEvent.settings.defaultFile = `/storage/event/logo/${imageUrl}`;
+                drEvent.destroy();
+                drEvent.init();
+
+                var eventVenues = response.venues.map((venue) => venue.id);
+                console.log(eventVenues);
+
+                $("#edit_event_id").val(response.op.id);
+                $("#edit_event_name").val(response.op.name);
+                $("#edit_venue_id").val(eventVenues);
+                $("#edit_venue_id").trigger("change");
+                $("#editActiveFlag").val(response.op.active_flag);
                 $("#edit_event_table").val(table);
                 // $("#edit_event_modal").modal("show");
             },
@@ -103,3 +130,8 @@ function loadingTemplate(message) {
     return '<i class="bx bx-loader-alt bx-spin bx-flip-vertical" ></i>';
 }
 
+function imageFormatter(value, row, index) {
+    if (!value)
+        return `<img src="/storage/products/noimage.png" alt="product image" width="60" class="rounded-circle pull-up">`;
+    return `<img src="/storage/event/logo/${value}" alt="product image" width="60" class="rounded-circle pull-up">`;
+}

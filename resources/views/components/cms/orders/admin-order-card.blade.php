@@ -19,6 +19,7 @@
                 <thead>
                     <tr>
                         <th data-checkbox="true" data-halign="left" data-align="center" data-visible="false"></th>
+                        <th data-halign="left" data-align="center" data-field="icon" data-visible="true"></th>
                         <!-- <th data-sortable="true" data-field="id1"><?= get_label('id', 'ID') ?></th> -->
                         <!-- <th data-sortable="true" data-field="id"><?= get_label('id', 'ID') ?></th> -->
                         <th data-sortable="true" data-field="order_number"><?= get_label('order_number', 'Order#') ?></th>
@@ -26,6 +27,7 @@
                         <th data-sortable="true" data-field="event_id"><?= get_label('Event', 'Event') ?></th>
                         <th data-sortable="true" data-field="order_date"><?= get_label('service_date', 'Service Date') ?></th>
                         <th data-sortable="true" data-field="total_quantity"><?= get_label('total_quantity', 'Total Quantity') ?></th>
+                        <th data-sortable="true" data-field="payable_to_sc"><?= get_label('payable_to_sc', 'Payable to SC') ?></th>
                         <th data-sortable="true" data-field="total_amount"><?= get_label('total_amount', 'Total Amount') ?></th>
                         <th data-sortable="true" data-field="status"><?= get_label('status', 'Status') ?></th>
                         <th data-sortable="true" data-field="created_at" data-visible="false"><?= get_label('created_at', 'Created at') ?></th>

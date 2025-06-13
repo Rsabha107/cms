@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use App\Models\Cms\Contractor;
 use App\Models\GeneralSettings\GlobalAttachment;
 use App\Models\Cms\FunctionalArea;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -92,4 +93,8 @@ class User extends Authenticatable
         return $this->hasMany(GlobalAttachment::class, 'model_id', 'id')->where('model_name', 'users');
     }
 
+    public function contractor()
+    {
+        return $this->belongsTo(Contractor::class, 'employee_id', 'id');
+    }
 }

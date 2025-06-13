@@ -203,6 +203,31 @@ $(document).ready(function () {
             }
         });
     });
+
+    // show attachment list from order list (clip icon)
+    $("body").on("click", "#attachment_list", function () {
+        $("#cover-spin").show();
+        id = $(this).data("model_id");
+        console.log("attachment_list clicked for id: " + id);
+
+        $.ajax({
+            url: "/cms/admin/orders/attachments/" + id,
+            method: "GET",
+            async: true,
+            success: function (response) {
+                g_response = response.view;
+                console.log("g_response", g_response);
+                $("#AttachmentView").empty("").append(g_response);
+                $("#attachment_list_modal").modal("show");
+                $("#cover-spin").hide();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                console.log(xhr.status);
+                console.log(thrownError);
+                $("#cover-spin").hide();
+            },
+        });
+    });
 });
 
 ("use strict");

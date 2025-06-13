@@ -24,21 +24,22 @@
                 <span class="visually-hidden">Loading...</span>
             </div>
         </div>
-        {{-- <div>
-            <x-formy.button_insert_js
+        <div class="d-flex justify-content-end m-2 ">
+            SC Catering Administration
+            {{-- <x-formy.button_insert_js
                 table="order_table"
                 selectionId="offcanvas-add-order"
                 dataId="0"
                 title="Add new Order"
                 class="btn btn-primary px-5"
                 icon="fa-solid fa-plus me-2"
-            ></x-formy.button_insert_js>
-        </div> --}}
+            ></x-formy.button_insert_js> --}}
+        </div>
     </div>
 
     <x-cms.orders.admin-order-card />
 </div>
-@include('cms.modals.orders_modal')
+@include('cms.modals.admin.orders_modal')
 
 @endsection
 

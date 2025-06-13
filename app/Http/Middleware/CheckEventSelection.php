@@ -23,9 +23,11 @@ class CheckEventSelection
                 if (auth()->user()->is_admin) {
                     session()->put('EVENT_ID', 11);
                     return redirect()->route('cms.admin.orders');
+                } elseif (auth()->user()->hasRole('Agency')) {
+                    return redirect()->route('cms.agency.orders.pick');
                 } else {
                     Log::info('CheckEventSelection: Redirecting to pick event');
-                    return redirect()->route('cms.customer.orders.pick');
+                    return redirect()->route('cms.contractor.orders.pick');
                 }
             }
         }

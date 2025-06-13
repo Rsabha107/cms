@@ -52,14 +52,7 @@
                                                     <th class="sort pe-1 align-middle white-space-nowrap"
                                                         data-sort="customer" style="min-width: 2.5rem">Status</th>
                                                     <th class="no-sort" style="text-align:right"></th>
-                                                    <!-- <th class="sort ps-3 pe-1 align-middle white-space-nowrap" data-sort="orderId" style="min-width: 4.5rem;">Order</th>
-                                <th class="sort pe-1 align-middle white-space-nowrap" data-sort="customer" style="min-width: 8.5rem">Customer</th>
-                                <th class="sort pe-1 align-middle white-space-nowrap pe-7" data-sort="date">Date</th>
-                                <th class="sort pe-1 align-middle white-space-nowrap" data-sort="address" style="min-width: 12.5rem;">Ship To</th>
-                                <th class="sort pe-1 align-middle white-space-nowrap" data-sort="deliveryType" style="min-width: 7rem">Delivery Type</th>
-                                <th class="sort pe-1 align-middle white-space-nowrap text-center" data-sort="status">Status</th>
-                                <th class="sort pe-1 align-middle white-space-nowrap text-end" data-sort="amount">Amount</th>
-                                <th class="no-sort"></th> -->
+
                                                 </tr>
                                             </thead>
                                             <tbody class="list">

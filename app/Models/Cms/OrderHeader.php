@@ -5,6 +5,7 @@ namespace App\Models\Cms;
 use App\Models\GeneralSettings\CompanyAddress;
 use App\Models\GeneralSettings\Currency;
 use App\Models\Cms\OrderNumGen;
+use App\Models\GeneralSettings\GlobalAttachment;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -39,9 +40,9 @@ class OrderHeader extends Model
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    public function customer()
+    public function contractor()
     {
-        return $this->belongsTo(Customer::class, 'customer_id');
+        return $this->belongsTo(Contractor::class, 'customer_id');
     }
 
     public function status()
@@ -67,5 +68,10 @@ class OrderHeader extends Model
     public function business_address()
     {
         return $this->belongsTo(CompanyAddress::class, 'deliver_to_address_id');
+    }
+
+    public function attachments()
+    {
+        return $this->hasMany(GlobalAttachment::class, 'model_id')->where('model_name', 'ORDERS');
     }
 }

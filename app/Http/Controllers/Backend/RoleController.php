@@ -304,7 +304,7 @@ class RoleController extends Controller
         // dd('mainEvent');
         $data = Role::find($id);
         //dd($data);
-        return view('/tracki/sec/roles/edit', ['data' => $data]);
+        return view('/sec/roles/edit', ['data' => $data]);
     } // editGroup
 
 

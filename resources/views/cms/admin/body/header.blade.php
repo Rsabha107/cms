@@ -2,7 +2,7 @@
 
 
     $current_event_id = session()->get('EVENT_ID');
-    $event = App\Models\Cms\Event::findOrFail($current_event_id);
+    $event = App\Models\Cms\Event::find($current_event_id);
 
     $id = Auth::user()->id;
     $profileData = App\Models\User::find($id);
@@ -27,7 +27,7 @@
                         {{-- @if ($session_set) --}}
                         <h3 class="logo-text ms-2 d-none d-sm-block">{{ config('settings.website_name') }} </h3>
                         <div class="theme-control-toggle fa-icon-wait px-2 d-none d-sm-block">
-                            <h6 class="mt-2 d-sm-block d-none text-primary">({{ $event->name }})</h6>
+                            <h6 class="mt-2 d-sm-block d-none text-primary">({{ $event?->name }})</h6>
                         </div>
                         {{-- @else
                         <h6 class="logo-text ms-2 d-none d-sm-block">{{ __('mds.page_title') }}</h6>
@@ -107,7 +107,7 @@
                                             <div class="d-flex">
                                                 <div class="avatar avatar-m {{ $avatar_status }} me-3">
                                                     <img class="rounded-circle"
-                                                        src="{{ route('mds.setting.event.file', $event->event_logo ? $event->event_logo : 'default.png') }}"
+                                                        src="/storage/event/logo/{{ $event->event_logo ? $event->event_logo : 'default.png' }}"
                                                         alt="" />
                                                 </div>
                                                 <div class="flex-1 me-sm-3">
@@ -116,7 +116,7 @@
                                                                 class='me-1 fs-10'>💬</span>Event
                                                             <span class="ms-2 text-body-quaternary text-opacity-75 fw-bold fs-10">10m</span>
                                                         </p> --}}
-                                                    <h4 class="fs-9 text-body-emphasis">{{ $event->name }}</h4>
+                                                    <h4 class="fs-9 text-body-emphasis">{{ $event?->name }}</h4>
 
                                                 </div>
                                             </div>

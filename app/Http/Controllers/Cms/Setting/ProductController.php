@@ -201,6 +201,7 @@ class ProductController extends Controller
                 // Log::info($extension);
                 // Log::info($fileNameToStore);
 
+                Storage::disk('public')->delete('products/' . $op->image);
                 // $path = $request->file('file_name')->storeAs('private/mds/event/logo', $fileNameToStore);
                 Storage::disk('public')->putFileAs('products', $file, $fileNameToStore);
 
@@ -208,7 +209,6 @@ class ProductController extends Controller
                 // Log::info($path);
                 $op->image = $fileNameToStore;
             }
-
 
             $op->product_name = $request->product_name;
             $op->product_price = $request->product_price;

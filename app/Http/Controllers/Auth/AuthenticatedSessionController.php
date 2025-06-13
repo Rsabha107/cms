@@ -22,7 +22,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(): View
     {
-        return view('mds.auth.sign-in');
+        return view('auth.sign-in');
     }
 
     /**
@@ -46,8 +46,8 @@ class AuthenticatedSessionController extends Controller
         Auth::logoutOtherDevices($request->password);
 
         Log::info('AuthenticatedSessionController:store user: '.$user);
-        Log::info('mds.use_otp: '.config('mds.use_otp'));
-        if (config('mds.use_otp')) {
+        Log::info('cms.use_otp: '.config('cms.use_otp'));
+        if (config('cms.use_otp')) {
             // $this->showOtp();
             // $simpleOTP = new SimpleOTP();
             // $code = $simpleOTP->create(auth()->user()->email);
@@ -55,7 +55,7 @@ class AuthenticatedSessionController extends Controller
             if($otp->status === true){
                 $user->notify(new EmailOtpVerification($otp->token));
             }
-            return view('mds/auth/otp');
+            return view('auth/otp');
         }
 
                 // //set the default workspace as set during user creation
@@ -69,7 +69,7 @@ class AuthenticatedSessionController extends Controller
             $url = 'cms/admin';
             return redirect()->intended($url);
         } else {
-            $url = 'cms/customer';
+            $url = 'cms/contractor';
             return redirect()->intended($url);
         }
 
@@ -87,7 +87,7 @@ class AuthenticatedSessionController extends Controller
 
 
         return redirect()->intended($url);
-        // return redirect()->intended(RouteServiceProvider::HOME);
+        // return redirect()->intended(RouteServiceProvider::HOME);.
     }
 
     /**
