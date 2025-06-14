@@ -69,20 +69,26 @@
             </a>
         </div>
         <!-- parent pages-->
-        <div class="nav-item-wrapper"><a class="nav-link label-1 {{ Request::is('cms/setting/product') ? 'active' : '' }}" href="{{route('cms.setting.product')}}" role="button" data-bs-toggle="" aria-expanded="false">
-                <div class="d-flex align-items-center"><span class="nav-link-icon"><span data-feather="compass"></span></span><span class="nav-link-text-wrapper"><span class="nav-link-text">Products</span></span>
-                </div>
-            </a>
-        </div>
-        <!-- parent pages-->
         <div class="nav-item-wrapper"><a class="nav-link label-1 {{ Request::is('cms/setting/venue') ? 'active' : '' }}" href="{{route('cms.setting.venue')}}" role="button" data-bs-toggle="" aria-expanded="false">
                 <div class="d-flex align-items-center"><span class="nav-link-icon"><span data-feather="compass"></span></span><span class="nav-link-text-wrapper"><span class="nav-link-text">Venue</span></span>
                 </div>
             </a>
         </div>
         <!-- parent pages-->
+        <div class="nav-item-wrapper"><a class="nav-link label-1 {{ Request::is('cms/setting/product') ? 'active' : '' }}" href="{{route('cms.setting.product')}}" role="button" data-bs-toggle="" aria-expanded="false">
+                <div class="d-flex align-items-center"><span class="nav-link-icon"><span data-feather="compass"></span></span><span class="nav-link-text-wrapper"><span class="nav-link-text">Products</span></span>
+                </div>
+            </a>
+        </div>
+        <!-- parent pages-->
         <div class="nav-item-wrapper"><a class="nav-link label-1 {{ Request::is('cms/setting/contractor') ? 'active' : '' }}" href="{{route('cms.setting.contractor')}}" role="button" data-bs-toggle="" aria-expanded="false">
                 <div class="d-flex align-items-center"><span class="nav-link-icon"><span data-feather="compass"></span></span><span class="nav-link-text-wrapper"><span class="nav-link-text">Contractor</span></span>
+                </div>
+            </a>
+        </div>
+        <!-- parent pages-->
+        <div class="nav-item-wrapper"><a class="nav-link label-1 {{ Request::is('cms/setting/service/period') ? 'active' : '' }}" href="{{route('cms.setting.service.period')}}" role="button" data-bs-toggle="" aria-expanded="false">
+                <div class="d-flex align-items-center"><span class="nav-link-icon"><span data-feather="compass"></span></span><span class="nav-link-text-wrapper"><span class="nav-link-text">Service Period</span></span>
                 </div>
             </a>
         </div>

@@ -29,6 +29,7 @@ use App\Http\Controllers\Cms\Agency\OrderController as AgencyOrderController;
 use App\Http\Controllers\Cms\Caterer\OrderController as CatererOrderController;
 use App\Http\Controllers\Cms\Contractor\OrderController;
 use App\Http\Controllers\Cms\Setting\ContractorController;
+use App\Http\Controllers\Cms\Setting\ServicePeriodController;
 use App\Http\Controllers\Mds\Auth\AdminController as AuthAdminController;
 use App\Http\Controllers\Mds\Customer\BookingController as CustomerBookingController;
 use App\Http\Controllers\Mds\Customer\UserController as CustomerUserController;
@@ -48,6 +49,7 @@ use App\Http\Controllers\Mds\Setting\VehicleTypeController;
 use App\Http\Controllers\Cms\Setting\VenueController;
 use App\Http\Controllers\Mds\Setting\ZoneController;
 use App\Http\Controllers\UtilController;
+use Barryvdh\DomPDF\ServiceProvider;
 
 /*
 |--------------------------------------------------------------------------
@@ -163,6 +165,19 @@ Route::group(['middleware' => 'prevent-back-history', 'XssSanitizer'], function 
             Route::post('/cms/setting/event/store', 'store')->name('cms.setting.event.store');
             Route::get('/cms/setting/event/mv/get/{id}', 'getEventView')->name('cms.setting.event.get.mv');
             // Route::get('/cms/setting/event/file/{file}', 'getPrivateFile')->name('cms.setting.event.file');
+        });
+
+        //Service Period
+        Route::controller(ServicePeriodController::class)->group(function () {
+            Route::get('/cms/setting/service/period', 'index')->name('cms.setting.service.period');
+            Route::get('/cms/setting/service/period/list', 'list')->name('cms.setting.service.period.list');
+            Route::get('/cms/setting/service/period/get/{id}', 'get')->name('cms.setting.service.period.get');
+            Route::post('cms/setting/service/period/update', 'update')->name('cms.setting.service.period.update');
+            Route::delete('/cms/setting/service/period/delete/{id}', 'delete')->name('cms.setting.service.period.delete');
+            Route::post('/cms/setting/service/period/store', 'store')->name('cms.setting.service.period.store');
+            Route::get('/cms/setting/service/period/mv/get/{id}', 'getEventView')->name('cms.setting.service.period.get.mv');
+            // Route::get('/cms/setting/event/file/{file}', 'getPrivateFile')->name('cms.setting.event.file');
+            Route::get('/cms/setting/service/period/{event}/venues', 'byEvent')->name('cms.setting.service.period.by.event');
         });
 
         //Contractor Setup
